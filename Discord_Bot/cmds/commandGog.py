@@ -1,8 +1,10 @@
 import discord
 from discord.ext import commands
-from Alter_Video_Function import alterVideo
+
 from pathlib import Path
 import os
+
+from cmds.func.Alter_Video_Function import alterVideo
 
 class commandGog(commands.Cog):
     def __init__(self, bot):
@@ -10,11 +12,9 @@ class commandGog(commands.Cog):
 
         # Clear and create Temp_Videos and Processed_Videos directories
         self.temp_dir = Path(__file__).parent / "Temp_Videos"
-        os.remove(self.temp_dir)
         self.temp_dir.mkdir(parents=True, exist_ok=True)
 
         self.processed_dir = Path(__file__).parent / "Processed_Videos"
-        os.remove(self.processed_dir)
         self.processed_dir.mkdir(parents=True, exist_ok=True)
         
 

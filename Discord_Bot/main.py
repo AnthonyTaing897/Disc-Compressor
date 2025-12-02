@@ -1,14 +1,14 @@
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
+
 import os
 
 # Load command list cog
-from Commands.commandGog import commandGog
+from cmds.commandGog import commandGog
 
-
-load_dotenv()
 # Bot Token
+load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
 if not token:
     raise EnvironmentError('DISCORD_TOKEN not set in environment')
