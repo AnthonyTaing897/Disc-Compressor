@@ -11,10 +11,10 @@ class commandGog(commands.Cog):
         self.bot = bot
 
         # Clear and create Temp_Videos and Processed_Videos directories
-        self.temp_dir = Path(__file__).parent / "Temp_Videos"
+        self.temp_dir = Path(__file__).parent / "Library/Temp_Videos"
         self.temp_dir.mkdir(parents=True, exist_ok=True)
 
-        self.processed_dir = Path(__file__).parent / "Processed_Videos"
+        self.processed_dir = Path(__file__).parent / "Library/Processed_Videos"
         self.processed_dir.mkdir(parents=True, exist_ok=True)
         
 
@@ -59,18 +59,3 @@ class commandGog(commands.Cog):
                 await ctx.send("The attachment is not a video.")
         else:
             await ctx.send("No attachment found.")
-
-    # alterVideo Command to save video to Temp_Videos folder
-    @commands.command()
-    async def saveVideo(self, ctx):
-        await ctx.send("Saving video...")
-        if ctx.message.attachments:
-            attachment = ctx.message.attachments[0]
-            if attachment.content_type and attachment.content_type.startswith('video/'):
-                save_path = self.temp_dir / attachment.filename
-
-                # save attachment into Temp_Videos
-                await attachment.save(fp = save_path, use_cached=False)
-                await ctx.send("Saved video successfully!")
-            else:
-                await ctx.send("The attachment is not a video.")
