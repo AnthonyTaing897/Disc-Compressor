@@ -9,7 +9,7 @@ def compressVid (video_file:Path,processed_drct:Path,filename:Path, target_file_
 
     # File size (in bytes)
     target_size = target_file_size * 1024 * 1024
-    
+
     probed_vid = ffmpeg.probe(str(video_file))
 
     # Video duration (secs)
@@ -19,10 +19,10 @@ def compressVid (video_file:Path,processed_drct:Path,filename:Path, target_file_
     audio_bitrate = float(next((s for s in probed_vid['streams'] if s['codec_type'] == 'audio'), None)['bit_rate'])
 
     # Calculate target video bitrate (bps) 
-    target_bitrate = ((target_size * 8) / (1.073741824 * vid_duration)) #1.073741824 to convert bytes to bits
+    target_bitrate = ((target_size * 8) / (1.073741824 * vid_duration)) 
 
     # Calculate target audio bitrate (bps)
-    if 10 * audio_bitrate > target_bitrate:
+    if compressAudio and 10 * audio_bitrate > target_bitrate:
         audio_bitrate = target_bitrate / 10
         if audio_bitrate < min_audio_bitrate < target_bitrate:
             audio_bitrate = min_audio_bitrate
@@ -37,30 +37,19 @@ def compressVid (video_file:Path,processed_drct:Path,filename:Path, target_file_
     compressed_video_filepath = f"{processed_drct}/{Path(filename).stem}_compressed.mp4"
 
 
-    if compressAudio:
-        compression_params = ffmpeg.output(video, compressed_video_filepath,
-                                           vcodec = 'libx264',
-                                           video_bitrate = int(video_bitrate),
-                                           audio_bitrate = int(audio_bitrate),
-                                           format='mp4')
-    else:
-        compression_params = ffmpeg.output(video, compressed_video_filepath,
-                                           vcodec = 'libx264',
-                                           video_bitrate = int(video_bitrate),
-                                           format='mp4')
     
-    # Output compressed video
-    compression_params.run(overwrite_output=True)
+    ffmpeg.output(video, compressed_video_filepath,
+                  vcodec = 'libx264',
+                  video_bitrate = int(video_bitrate),
+                  audio_bitrate = int(audio_bitrate),
+                  format='mp4').run(overwrite_output=True)
 
-    # Get final file size
     final_size = Path(compressed_video_filepath).stat().st_size
 
-    # Compare target size vs final size
     print(f"-----------\nTarget size: {target_size} bytes")
     print(f"Final size: {final_size} bytes\n-----------") 
 
     return Path(compressed_video_filepath)
 
-
 if __name__ == "__main__":
-    compressVid(Path("Change and Slam.mp4"),"Discord_Bot\cmds\Library\Processed_Videos",Path("Change and Slam.mp4"),9,True)
+    compressVid(Path("Shotgun Wedding Trailer.mov"),"Discord_Bot\cmds\Library\Processed_Videos",Path("Shotgun Wedding Trailer.mov"),9,False)
