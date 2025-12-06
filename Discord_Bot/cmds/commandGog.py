@@ -8,8 +8,8 @@ from cmds.func.Alter_Video_Function import alterVideo
 from cmds.func.Compress_Video_Function import compressVid
 
 class commandGog(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, client):
+        self.client = client
 
         # Clear and create Temp_Videos and Processed_Videos directories
         self.temp_dir = Path(__file__).parent / "Library/Temp_Videos"
@@ -23,7 +23,28 @@ class commandGog(commands.Cog):
     async def awake(self, ctx):
         await ctx.send("I am awake and ready to compress your videos!")
 
-    # compress command to compress video attachments (Not functional yet)
+        # Message discord user when given username in plain text (Test command)
+    @commands.command()
+    async def MsgUser(self, ctx):
+        user = ctx.message.content[9:].strip()
+        print(int(user))
+        targetUser = await self.client.fetch_user(int(user)) # Try to get user by ID first
+        print(targetUser)
+        if targetUser:
+            await targetUser.send(f"Hello {targetUser.mention}! This is a message from a test bot.")
+        else:
+            await ctx.send(f"User '{user}' not found in this server.")
+
+    
+        # Get Discord ID of mentioned user (Test command)
+    @commands.command()
+    async def getId(self, ctx, target: discord.Member = None):
+        if target:
+            await ctx.send(f"{target.name}'s Discord ID is: {target.id}")
+        else:
+            await ctx.send("Please mention a user to get their Discord ID.")
+
+    # compress command to compress video attachments
     @commands.command()
     async def compress(self, ctx):
         if ctx.message.attachments:

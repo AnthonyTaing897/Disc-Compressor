@@ -7,25 +7,25 @@ import os
 # Load command list cog
 from cmds.commandGog import commandGog
 
-# Bot Token
+# client Token
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
 if not token:
     raise EnvironmentError('DISCORD_TOKEN not set in environment')
 
 
-# Bot Intent
+# client Intent
 intents = discord.Intents.default()
 intents.message_content = True
 
 # Set up Command Prefix and Intents
-bot = commands.Bot(command_prefix = '%', intents = intents)
+client = commands.Bot(command_prefix = '%', intents = intents)
 
-# Event: Bot is ready
-@bot.event
+# Event: client is ready
+@client.event
 async def on_ready():
-    await bot.add_cog(commandGog(bot))
-    print(f"The {bot.user.name} is ready to compress")
+    await client.add_cog(commandGog(client))
+    print(f"The {client.user.name} is ready to compress")
 
-# Run the bot (Leave this at the end of the file)
-bot.run(token)
+# Run the client (Leave this at the end of the file)
+client.run(token)
