@@ -15,6 +15,9 @@ def webhook():
     if request.method == 'POST':
         data = request.get_json() or {}
         print(data)
+        urls = data.get('data')
+        print(urls)
+        '''
         user_id = data.get('payload').get('data').get('UserID')
         print(user_id)
         if int(user_id) == 1:
@@ -32,7 +35,7 @@ def webhook():
             
             _bot.loop.create_task(send_message())
 
-
+        '''
         return 'success', 200
     
     else:
