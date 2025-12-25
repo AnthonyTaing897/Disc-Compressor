@@ -1,9 +1,9 @@
 import discord
-import sqlite3
 from discord.ext import commands
 from dotenv import load_dotenv
 from server import webhookReceiver
-
+from oauth2client.service_account import ServiceAccountCredentials
+import gspread
 import os
 
 # Load command list cog
@@ -28,14 +28,15 @@ connection = None
 @client.event
 async def on_ready():
     #initalise the database connection and clear previous sessions
-    connection = sqlite3.connect('Discord_Bot\DB\database.db')
-    cursor = connection.cursor()
-    cursor.execute("""DROP TABLE IF EXISTS sessions""")
-    cursor.execute("""CREATE TABLE IF NOT EXISTS sessions (session_id TEXT PRIMARY KEY, session_code TEXT UNIQUE, user_id TEXT, start_time TIMESTAMP)""")  
-    connection.commit()
-    cursor.close()
+    scope = ["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/spreadsheets"]
+
+    creds = ServiceAccountCredentials.from_json_keyfile_name("disc-compress-cred.json", scope)
+
+    dbclient = gspread.authorize(creds)
+
+    database = dbclient.open("Disc_Compress_Requests").sheet1
     
-    await client.add_cog(commandGog(client = client, connection = connection))
+    await client.add_cog(commandGog(client = client, database = database))
 
     
 
