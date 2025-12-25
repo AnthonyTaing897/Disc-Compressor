@@ -62,6 +62,6 @@ class commandGog(commands.Cog):
     def user_exists(self, userID:str, database:gspread.Worksheet) -> bool:
         records = database.get_all_records()
         for record in records:
-            if str(record['User ID']) == userID:
+            if str(record['User ID']) == str(userID):
                 return True
         return False
