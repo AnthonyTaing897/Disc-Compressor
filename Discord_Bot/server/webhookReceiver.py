@@ -16,30 +16,36 @@ def index():
 def webhook():
     if request.method == 'POST':
         data = request.get_json() or {}
-        print(data)
+        
         urls = data.get('data').get('url', [])
-        print(urls)
-        if urls:
-            for url in urls:
+        user_id = data.get('data').get('UserID')
+
+        sendCompressedVideo(user_id, urls)
+        return {"status": "success"}
+    
+    else:
+        abort(400)
+
+def sendCompressedVideo(user_id, file_paths):
+    if file_paths and _bot:
+            for url in file_paths:
                 try:
                     x = url.get('url')
                     response = requests.get(x)
+                    #We need to change this to a unique file name each time to avoid overwriting
                     with open("Temp Videos/testfile.mp4", 'wb') as f:
                         f.write(response.content)
                         f.close()
                 except Exception as e:
                     print(f"Error downloading file from {url}: {e}")
 
-        if _bot: 
-                user_id = data.get('data').get('UserID')
-
-                processedVid = compressVid(video_file="Temp Videos/testfile.mp4",
-                                processed_drct="Discord_Bot/cmds/Library/Processed_Videos",
-                                filename="testfile.mp4",
-                                target_file_size=8,
-                                compressAudio=True)
-                
-                async def send_message(file_path, user_id):
+            processedVid = compressVid(video_file="Temp Videos/testfile.mp4",
+                                    processed_drct="Discord_Bot/cmds/Library/Processed_Videos",
+                                    filename="testfile.mp4",
+                                    target_file_size=8,
+                                    compressAudio=True)
+            
+            async def send_message(file_path, user_id):
                     try:
                         user = await _bot.fetch_user(int(user_id))
                         await user.send("Here is your compressed video:")  
@@ -47,33 +53,7 @@ def webhook():
                     except Exception as e:
                         print(f"Error sending message to user {user_id}: {e}")
             
-                _bot.loop.create_task(send_message(processedVid, user_id))
-
-                
-        '''
-        user_id = data.get('payload').get('data').get('UserID')
-        print(user_id)
-        if int(user_id) == 1:
-            abort(400)
-
-        if _bot and user_id:
-            
-            async def send_message():
-                thing = discord.File('Thing.png')
-                try:
-                    user = await _bot.fetch_user(int(user_id))
-                    await user.send(file = thing)
-                except Exception as e:
-                    print(f"Error sending message to user {user_id}: {e}")
-            
-            _bot.loop.create_task(send_message())
-
-        '''
-        return {"status": "success"}
-    
-    else:
-        abort(400)
-
+            _bot.loop.create_task(send_message(processedVid, user_id))
 
 def init_webhook_reciever(bot, host='0.0.0.0', port=8080, url = '/discCompress'):
     global _bot
