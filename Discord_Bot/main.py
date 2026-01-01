@@ -36,7 +36,9 @@ async def on_ready():
 
     database = dbclient.open("Disc_Compress_Requests").sheet1
     
-    database.delete_rows(2, database.row_count)
+    if database.row_count > 1:
+        database.delete_rows(2, database.row_count)
+        
     await client.add_cog(commandGog(client = client, database = database))
 
     
