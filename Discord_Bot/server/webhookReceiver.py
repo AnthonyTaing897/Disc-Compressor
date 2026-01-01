@@ -17,28 +17,33 @@ def webhook():
     if request.method == 'POST':
         data = request.get_json() or {}
         
-        urls = data.get('data').get('url', [])
+        
         user_id = data.get('data').get('UserID')
+        session_id = data.get('data').get('SessionID')
+        urls = data.get('data').get('url', [])
 
-        sendCompressedVideo(user_id, urls)
+        sendCompressedVideo(user_id,session_id,urls)
         return {"status": "success"}
     
     else:
         abort(400)
 
-def sendCompressedVideo(user_id, file_paths):
+def sendCompressedVideo(user_id, session_id,file_paths):
     if file_paths and _bot:
+            filename = session_id + ".mp4"
+
+            # Currently only one file is ever given this might change in the future
             for url in file_paths:
                 try:
                     x = url.get('url')
                     response = requests.get(x)
                     #We need to change this to a unique file name each time to avoid overwriting
-                    with open("Temp Videos/testfile.mp4", 'wb') as f:
+                    with open(f"Discord_Bot/cmds/Library/Temp Videos/{filename}", 'wb') as f:
                         f.write(response.content)
                         f.close()
                 except Exception as e:
                     print(f"Error downloading file from {url}: {e}")
-
+                
             processedVid = compressVid(video_file="Temp Videos/testfile.mp4",
                                     processed_drct="Discord_Bot/cmds/Library/Processed_Videos",
                                     filename="testfile.mp4",
