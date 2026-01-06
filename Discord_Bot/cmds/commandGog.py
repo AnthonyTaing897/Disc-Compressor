@@ -4,6 +4,7 @@ import gspread
 from pathlib import Path
 from server.func.Alter_Video_Function import alterVideo
 from server.func.Compress_Video_Function import compressVid
+import shutil
 
 class commandGog(commands.Cog):
     def __init__(self, client, database : gspread.Worksheet = None):
@@ -13,11 +14,15 @@ class commandGog(commands.Cog):
 
         # Clear and create Temp_Videos and Processed_Videos directories
         self.temp_dir = Path(__file__).parent / "Library/Temp_Videos"
-        self.temp_dir.mkdir(parents=True, exist_ok=True)
-
         self.processed_dir = Path(__file__).parent / "Library/Processed_Videos"
-        self.processed_dir.mkdir(parents=True, exist_ok=True)
         
+        if self.temp_dir.exists():
+            shutil.rmtree(self.temp_dir)
+        self.temp_dir.mkdir(parents=True, exist_ok=True)
+        
+        if self.processed_dir.exists():
+            shutil.rmtree(self.processed_dir)
+        self.processed_dir.mkdir(parents=True, exist_ok=True)
 
     @commands.command()
     async def awake(self, ctx):
@@ -33,4 +38,4 @@ class commandGog(commands.Cog):
         
         session_code = create_session(userID, self.database)
         
-        await ctx.send(f"Session created! Your session code is: {session_code}")
+        await ctx.send(f"Session created! Your session code is: **{session_code}**")

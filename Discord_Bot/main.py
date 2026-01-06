@@ -22,7 +22,6 @@ intents.message_content = True
 
 # Set up Command Prefix and Intents
 client = commands.Bot(command_prefix = '%', intents = intents)
-connection = None
 
 # Event: client is ready
 @client.event
@@ -45,11 +44,6 @@ async def on_ready():
 
     webhookReceiver.init_webhook_reciever(client)
     print(f"The {client.user.name} is ready to compress")
-
-@client.event
-async def on_disconnect():
-    connection.close()
-
 
 if __name__ == "__main__":
     
