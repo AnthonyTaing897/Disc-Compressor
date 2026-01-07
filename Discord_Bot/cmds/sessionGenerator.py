@@ -40,7 +40,7 @@ def create_session(userID:str, database:gspread.Worksheet) -> str:
                 raise ValueError("Database worksheet is not provided.")
             
             # Store session in the database sets date and time automatically separately
-            database.append_row([session_ID, session_code, str(userID), str(utc_1h_time.date().strftime("%Y-%m-%d")), str(utc_1h_time.time().strftime("%H:%M:%S"))])
+            database.append_row([session_ID, session_code, str(userID), str(utc_1h_time.date().strftime("%Y-%m-%d")), str(utc_1h_time.time().strftime("%H:%M:%S")),0])
 
             return session_code
 
