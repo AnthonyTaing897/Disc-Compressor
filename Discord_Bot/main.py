@@ -47,21 +47,21 @@ async def on_ready():
     webhookReceiver.init_webhook_reciever(client, database = database)
     print(f"The {client.user.name} is ready to compress")
 
-@client.tree.command(name="awake")
-async def awake(ctx):
-    await ctx.response.send_message("I am awake and ready to compress your videos!")
+@client.tree.command(name="awake",description="Check if the bot is awake")
+async def awake(interaction: discord.Interaction):
+    await interaction.response.send_message("I am awake and ready to compress your videos!")
 
-@client.tree.command(name="request")
-async def request(ctx):
-    userID = ctx.user.id
+@client.tree.command(name="request",description="Request a video compression session")
+async def request(interaction: discord.Interaction):
+    userID = interaction.user.id
         
     if user_exists(userID,database) and not user_exists_but_inactive(userID,database):
-            await ctx.response.send_message("You already have an active session.")
+            await interaction.response.send_message("You already have an active session.")
             return
         
     session_code = create_session(userID, database)
         
-    await ctx.response.send_message(f"Session created! Your session code is: **{session_code}**\nInput code at this website to upload your video: {os.getenv('WEBSITE_URL')}")
+    await interaction.response.send_message(f"Session created! Your session code is: **{session_code}**\nInput code at this website to upload your video: {os.getenv('WEBSITE_URL')}")
 
 
 if __name__ == "__main__":
