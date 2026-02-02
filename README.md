@@ -1,5 +1,5 @@
 # Disc Compressor
-![Disc Compressor Logo](https://github.com/AnthonyTaing897/Disc-Compressor/blob/main/Decals/Disc%20Compress.png)
+![Disc Compressor Logo](https://github.com/AnthonyTaing897/Disc-Compressor/blob/main/Decals/Disc%20Compress%20Webclip.png)
 ## Overview ℹ️
 Incorporating the use of a website for video input, this tool will allow vidoes greater than 8mb is size to be compress and send to directly to Discord Users. Thus, allowing non-premium users to be able to send videos they might have. I began this project due to being fed up of wanting to send videos to friends or servers but being prevented due to Discord's size restrictions. Rather than going online to compress my videos on possibly malicous websites, I wanted to create my own that relieve this common issue. 
 
