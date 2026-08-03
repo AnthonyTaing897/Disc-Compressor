@@ -22,7 +22,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 
 # Set up Command Prefix and Intents
-client = commands.Bot(command_prefix = '/', intents = intents)
+client = commands.Bot(command_prefix = '!', intents = intents)
 
 #initalise the database connection and clear previous sessions
 scope = ["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/spreadsheets"]
@@ -30,7 +30,7 @@ creds = ServiceAccountCredentials.from_json_keyfile_name("disc-compress-cred.jso
 dbclient = gspread.authorize(creds)
 database = dbclient.open("Disc_Compress_Requests").sheet1
 if database.row_count > 1:
-    database.delete_rows(2, database.row_count)
+    database.batch_clear(['A2:F'])
         
 # Event: client is ready
 @client.event
@@ -48,10 +48,12 @@ async def on_ready():
     print(f"The {client.user.name} is ready to compress")
 
 @client.tree.command(name="awake",description="Check if the bot is awake")
+@discord.app_commands.allowed_contexts(guilds=False, dms=True, private_channels=True)
 async def awake(interaction: discord.Interaction):
     await interaction.response.send_message("I am awake and ready to compress your videos!")
 
 @client.tree.command(name="request",description="Request a video compression session")
+@discord.app_commands.allowed_contexts(guilds=False, dms=True, private_channels=True)
 async def request(interaction: discord.Interaction):
     userID = interaction.user.id
         

@@ -11,12 +11,22 @@ def compressVid (video_file:Path,processed_drct:Path,filename:Path, target_file_
     target_size = target_file_size * 1024 * 1024
 
     probed_vid = ffmpeg.probe(str(video_file))
+    print(probed_vid)
 
     # Video duration (secs)
-    vid_duration = float(probed_vid['format']['duration'])
+    vid_duration = probed_vid['format']
+    if vid_duration is None:
+        raise ValueError("Could not determine video duration.")
+    else:
+        vid_duration = float(vid_duration['duration'])
 
     # Audio bitrate (bps)
-    audio_bitrate = float(next((s for s in probed_vid['streams'] if s['codec_type'] == 'audio'), None)['bit_rate'])
+    audio_bitrate = next((s for s in probed_vid['streams'] if s['codec_type'] == 'audio'), None)
+
+    if audio_bitrate is None:
+        audio_bitrate = min_audio_bitrate  # Default to 128 kbps if audio bitrate is not found
+    else: 
+        audio_bitrate = float(audio_bitrate['bit_rate'])
 
     # Calculate target video bitrate (bps) 
     target_bitrate = ((target_size * 8) / (1.073741824 * vid_duration)) 
@@ -52,4 +62,4 @@ def compressVid (video_file:Path,processed_drct:Path,filename:Path, target_file_
     return Path(compressed_video_filepath)
 
 if __name__ == "__main__":
-    compressVid(Path("Shotgun Wedding Trailer.mov"),"Discord_Bot\cmds\Library\Processed_Videos",Path("Shotgun Wedding Trailer.mov"),9,False)
+    compressVid(Path("2026-02-13 15-38-51.mp4"),"Discord_Bot\cmds\Library\Processed_Videos",Path("2026-02-13 15-38-51.mp4"),9,False)
